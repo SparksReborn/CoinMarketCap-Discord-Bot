@@ -1,0 +1,33 @@
+{
+  "name": "sparks-discord-bot",
+  "version": "1.0.0",
+  "description": "A discord bot to show Coin Statistics for Sparks",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SparksReborn/CoinMarketCap-Discord-Bot.git"
+  },
+  "keywords": [
+    "sparks"
+  ],
+  "contributors": [
+    "The-Swift",
+    "zawasp",
+    "ItsJustMeChris"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SparksReborn/CoinMarketCap-Discord-Bot/issues"
+  },
+  "homepage": "https://github.com/SparksReborn/CoinMarketCap-Discord-Bot#readme",
+  "dependencies": {
+    "dateformat": "^3.0.3",
+    "discord.js": "^11.3.2",
+    "moment": "^2.22.1",
+    "node-schedule": "^1.3.0",
+    "request": "^2.87.0"
+  }
+}
