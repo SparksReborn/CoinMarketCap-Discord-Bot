@@ -49,7 +49,7 @@ client.on('message', message => {
                 var coinUp = "<:indicator_up:449091710048272385>";
                 var coinDown = "<:indicator_down:449092038965854212>";
                 var btcIcon = "<:icon_bitcoin:449088706456977418>";
-                var usdIcon = "<:icon_dollar:449093637624561664>";
+                var usdIcon = "<:icon_dollar:449095039600164864>";
 
                 var coinChange1h = `**Hour:** ${coinUp} ${data.data.quotes.USD.percent_change_1h}%`;
                 if (data.data.quotes.USD.percent_change_1h && data.data.quotes.USD.percent_change_1h.toString().startsWith('-')) {
