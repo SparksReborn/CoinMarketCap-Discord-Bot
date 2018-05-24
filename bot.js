@@ -46,10 +46,10 @@ client.on('message', message => {
                 var coinMaxSupply = "21,000,000";
                 var coinCap = "N/A";
 
-                var coinUp = "<:indicator_up:448855280021798912>";
-                var coinDown = "<:indicator_down:448855321100812299>";
-                var btcIcon = "<:icon_bitcoin:448859156179582986>";
-                var usdIcon = "<:icon_dollar:448859156183777282>";
+                var coinUp = "<:indicator_up:449091710048272385>";
+                var coinDown = "<:indicator_down:449092038965854212>";
+                var btcIcon = "<:icon_bitcoin:449088706456977418>";
+                var usdIcon = "<:icon_dollar:449093637624561664>";
 
                 var coinChange1h = `**Hour:** ${coinUp} ${data.data.quotes.USD.percent_change_1h}%`;
                 if (data.data.quotes.USD.percent_change_1h && data.data.quotes.USD.percent_change_1h.toString().startsWith('-')) {
