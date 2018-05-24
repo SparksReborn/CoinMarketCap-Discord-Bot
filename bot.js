@@ -1,13 +1,10 @@
 const schedule = require('node-schedule')
 const dateFormat = require('dateformat')
 const moment = require('moment')
-const mysql = require('mysql')
 const Discord = require('discord.js')
 const client = new Discord.Client()
 const rule = new schedule.RecurrenceRule()
 const request = require('request')
-const Pastee = require('pastee')
-const paste = new Pastee()
 const config = require('./config.json');
 
 client.on('ready', () => {
@@ -20,7 +17,7 @@ client.on('message', message => {
     if (words[0] === '$spk') {
         var url = 'https://api.coinmarketcap.com/v2/ticker/2448/?convert=BTC'
         var out = []
-        console.log(url)
+        // console.log(url)
         request.get({
             url: url,
             json: true,
@@ -33,73 +30,75 @@ client.on('message', message => {
             } else if (res.statusCode !== 200) {
                 message.reply("?")
             } else {
-                client.user.setGame(data.data.symbol + ": $" + data.data.quotes.USD.price)
+                client.user.setActivity(data.data.symbol + ": $" + data.data.quotes.USD.price)
                 var utcSeconds = data.data.last_updated;
                 var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
                 d.setUTCSeconds(utcSeconds);
+
+                var coinPriceUSD = data.data.quotes.USD.price.toString();
+                var coinPriceBTC = data.data.quotes.BTC.price.toFixed(8).toString();
+                var coinVolume = data.data.quotes.USD.volume_24h.toString();
+
+                // Because CMC data is a little outdated we cannot estimate market cap, circulating supply or current supply
+                var coinName = data.data.name;
+                var coinSymbol = data.data.symbol;
+                var coinRank = data.data.rank;
+                var coinMaxSupply = "21,000,000";
+                var coinCap = "N/A";
+
+                var coinUp = "<:indicator_up:448855280021798912>";
+                var coinDown = "<:indicator_down:448855321100812299>";
+                var btcIcon = "<:icon_bitcoin:448859156179582986>";
+                var usdIcon = "<:icon_dollar:448859156183777282>";
+
+                var coinChange1h = `**Hour:** ${coinUp} ${data.data.quotes.USD.percent_change_1h}%`;
+                if (data.data.quotes.USD.percent_change_1h && data.data.quotes.USD.percent_change_1h.toString().startsWith('-')) {
+                  coinChange1h = `**Hour:** ${coinDown} ${data.data.quotes.USD.percent_change_1h}%`;
+                }
+                coinChange24h = `**Day:** ${coinUp} ${data.data.quotes.USD.percent_change_24h}%`;
+                if (data.data.quotes.USD.percent_change_24h && data.data.quotes.USD.percent_change_24h.toString().startsWith('-')) {
+                  coinChange24h = `**Day:** ${coinDown} ${data.data.quotes.USD.percent_change_24h}%`;
+                }
+                coinChange7d = `**Week:** ${coinUp} ${data.data.quotes.USD.percent_change_7d}%`;
+                if (data.data.quotes.USD.percent_change_7d && data.data.quotes.USD.percent_change_7d.toString().startsWith('-')) {
+                  coinChange7d = `**Week:** ${coinDown} ${data.data.quotes.USD.percent_change_7d}%`;
+                }
+
                 message.channel.send({
                     embed: {
                         color: 16733525,
                         author: {
-                            name: data.data.name,
+                            name: coinName + " (" + coinSymbol + ")",
                             icon_url: "https://i.imgur.com/om7BdDb.png"
                         },
-                        // title: data.data.name,
-                        // description: "Most recent market data.",
                         fields: [
                             {
-                                name: "Rank",
-                                value: data.data.rank || "idk"
+                                name: "Price",
+                                value: `${usdIcon} **USD:** $${coinPriceUSD}\n${btcIcon} **BTC:** ${coinPriceBTC}\n`,
+                                inline: true
                             },
                             {
-                                name: "USD Price",
-                                value: "$"+data.data.quotes.USD.price.toString() || "idk"
+                                name: "Price Changes",
+                                value: `${coinChange1h}\n${coinChange24h}\n${coinChange7d}`,
+                                inline: true
                             },
                             {
-                                name: "BTC Price",
-                                value: data.data.quotes.BTC.price.toFixed(8).toString() || "idk"
+                                name: "Coin Information",
+                                value: `**CMC Rank:** ${coinRank}\n**Market Cap:** ${coinCap}`,
+                                inline: true
                             },
                             {
-                                name: "24h Volume (USD)",
-                                value: "$" + data.data.quotes.USD.volume_24h.toString() || "idk"
-                            },
-                            {
-                                name: "Price change 1H (USD)",
-                                value: data.data.quotes.USD.percent_change_1h.toString()+"%" || "idk"
-                            },
-                            {
-                                name: "Price change 24H (USD)",
-                                value: data.data.quotes.USD.percent_change_24h.toString()+"%" || "idk"
-                            },
-                            {
-                                name: "Price change 7 Days (USD)",
-                                value: data.data.quotes.USD.percent_change_7d.toString()+"%" || "idk"
-                            },
-                            // {
-                            //     name: "Market Cap (USD)",
-                            //     value: data[0].market_cap_usd || "idk"
-                            // },
-                            // {
-                            //     name: "Available Supply",
-                            //     value: data[0].available_supply || "idk"
-                            // },
-                            // {
-                            //     name: "Total Supply",
-                            //     value: data[0].total_supply || "idk"
-                            // },
-                            {
-                                name: "Max Supply",
-                                value: "21000000" || "idk"
-                            },
-                            {
-                                name: "Last Updated",
-                                value: d.toString() || "idk"
+                                name: "\u200C",
+                                value: `**24H Volume:** $${coinVolume}\n**Max Supply:** ${coinMaxSupply} SPK`,
+                                inline: true
                             }
                         ],
+                        thumbnail: {
+                          url: "https://i.imgur.com/om7BdDb.png"
+                        },
                         timestamp: new Date(),
                         footer: {
-                            icon_url: "https://i.imgur.com/om7BdDb.png",
-                            text: "Powered By Coin Market Cap"
+                            text: "Powered by CoinMarketCap"
                         }
                     }
                 })
